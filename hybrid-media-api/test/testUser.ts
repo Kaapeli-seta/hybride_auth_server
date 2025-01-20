@@ -23,7 +23,7 @@ const registerUser = (
           expect(newUser.message).toBe('user created');
           expect(newUser.user.user_id).toBeGreaterThan(0);
           expect(newUser.user.username).toBe(user.username);
-          expect(newUser.user.email).toBe(user.email);
+          expect(newUser.user.email).toBe(user.email?.toLowerCase());
           expect(newUser.user.created_at).not.toBe('');
           expect(newUser.user.level_name).toBe('User');
           resolve(newUser);

@@ -88,6 +88,7 @@ const postMediaItem = (
   mediaItem: Partial<MediaItem>,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
+    console.log("-------------------------------" + url + path)
     request(url)
       .post(path)
       .set('Authorization', `Bearer ${token}`)
@@ -107,18 +108,21 @@ const postMediaItem = (
 const putMediaItem = (
   url: string | Application,
   id: number,
+  token: string,
   mediaItem: Omit<MediaItem, 'media_id' | 'thumbnail' | 'created_at'>,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
+    console.log("-------------------------------" + url + `/api/v1/media/${id}`)
     request(url)
       .put(`/api/v1/media/${id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(mediaItem)
       .expect(200, (err, response) => {
         if (err) {
           reject(err);
         } else {
           const message: MessageResponse = response.body;
-          expect(message.message).toBe('media item updated');
+          expect(message.message).toBe('Media updated');
           resolve(message);
         }
       });
@@ -139,7 +143,7 @@ const deleteMediaItem = (
           reject(err);
         } else {
           const message: MessageResponse = response.body;
-          expect(message.message).toBe('media item deleted');
+          expect(message.message).toBe('Media deleted');
           resolve(message);
         }
       });
@@ -169,11 +173,13 @@ const getNotFoundMediaItem = (
 const putNotFoundMediaItem = (
   url: string | Application,
   id: number,
+  token: string,
   media_name: string,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
     request(url)
       .put(`/api/v1/media/${id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({media_name})
       .expect(404, (err, response) => {
         if (err) {
@@ -190,10 +196,12 @@ const putNotFoundMediaItem = (
 const deleteNotFoundMediaItem = (
   url: string | Application,
   id: number,
+  token: string,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
     request(url)
       .delete(`/api/v1/media/${id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404, (err, response) => {
         if (err) {
           reject(err);
@@ -209,11 +217,13 @@ const deleteNotFoundMediaItem = (
 // functions to test invalid data 400 for mediaItem routes
 const postInvalidMediaItem = (
   url: string | Application,
+  token: string,
   media_name: string,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
     request(url)
       .post('/api/v1/media')
+      .set('Authorization', `Bearer ${token}`)
       .send({media_name})
       .expect(400, (err, response) => {
         if (err) {
@@ -230,11 +240,13 @@ const postInvalidMediaItem = (
 const putInvalidMediaItem = (
   url: string | Application,
   id: string,
+  token:string,
   media_name: string,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
     request(url)
       .put(`/api/v1/media/${id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({media_name})
       .expect(400, (err, response) => {
         if (err) {
@@ -251,10 +263,12 @@ const putInvalidMediaItem = (
 const deleteInvalidMediaItem = (
   url: string | Application,
   id: string,
+  token: string,
 ): Promise<MessageResponse> => {
   return new Promise((resolve, reject) => {
     request(url)
       .delete(`/api/v1/media/${id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(400, (err, response) => {
         if (err) {
           reject(err);

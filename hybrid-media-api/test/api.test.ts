@@ -37,7 +37,7 @@ describe('Media API', () => {
   let token: string;
   let user: UserWithNoPassword;
   const testUser: Partial<User> = {
-    username: 'Test User ' + randomstring.generate(7),
+    username: 'Test_User_' + randomstring.generate(7),
     email: randomstring.generate(9) + '@user.fi',
     password: 'asdfQEWR1234',
   };
@@ -88,7 +88,8 @@ describe('Media API', () => {
   let testMediaItem: MediaItem;
   it('Should get array of media items', async () => {
     mediaItems = await getMediaItems(app);
-    testMediaItem = mediaItems[0];
+    console.log("----------------------&&& " + JSON.stringify(mediaItems[mediaItems.length -1]))
+    testMediaItem = mediaItems[mediaItems.length -1];
   });
 
   it('Should get media item by id', async () => {
@@ -97,7 +98,8 @@ describe('Media API', () => {
   });
 
   it('Should update media item', async () => {
-    const updatedItem = {
+    console.log("---------------------------------------%% " + testMediaItem.media_id)
+    const updatedItem: Omit<MediaItem, 'media_id' | 'thumbnail' | 'created_at'> = {
       title: 'Updated Test Title',
       description: 'Updated test description',
       filename: testMediaItem.filename,
@@ -105,7 +107,7 @@ describe('Media API', () => {
       filesize: testMediaItem.filesize,
       user_id: testMediaItem.user_id,
     };
-    await putMediaItem(app, testMediaItem.media_id, updatedItem);
+    await putMediaItem(app, testMediaItem.media_id, token, updatedItem);
   });
 
   it('Should delete media item', async () => {
@@ -118,24 +120,24 @@ describe('Media API', () => {
   });
 
   it('Should return 404 when updating non-existent media item', async () => {
-    await putNotFoundMediaItem(app, 999999, 'Test media');
+    await putNotFoundMediaItem(app, 999999, token, 'Test media');
   });
 
   it('Should return 404 when deleting non-existent media item', async () => {
-    await deleteNotFoundMediaItem(app, 999999);
+    await deleteNotFoundMediaItem(app, 999999, token);
   });
 
   // test 400 error mediaItem routes with invalid data
   it('Should return 400 when posting invalid media item', async () => {
-    await postInvalidMediaItem(app, '');
+    await postInvalidMediaItem(app, token, '');
   });
 
   it('Should return 400 when updating with invalid media item data', async () => {
-    await putInvalidMediaItem(app, 'invalid-id', '');
+    await putInvalidMediaItem(app, 'invalid-id', token, '');
   });
 
   it('Should return 400 when deleting with invalid media id', async () => {
-    await deleteInvalidMediaItem(app, 'invalid-id');
+    await deleteInvalidMediaItem(app, 'invalid-id', token);
   });
 
   it('Should return 400 when getting media with invalid id', async () => {

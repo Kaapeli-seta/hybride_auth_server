@@ -30,7 +30,7 @@ const createUser = (
           const userData = result.user as UserWithLevel;
           expect(userData.user_id).toBeGreaterThan(0);
           expect(userData.username).toBe(user.username);
-          expect(userData.email).toBe(user.email);
+          expect(userData.email).toBe(user.email.toLowerCase());
           expect(userData.created_at).toBeDefined();
           expect(userData.level_name).toBe('User');
           resolve(userData);
@@ -165,7 +165,7 @@ const modifyUser = (
           const userData = result.user as UserWithLevel;
           expect(userData.user_id).toBeGreaterThan(0);
           expect(userData.username).toBe(user.username);
-          expect(userData.email).toBe(user.email);
+          expect(userData.email).toBe(user.email.toLowerCase());
           expect(userData.created_at).toBeDefined();
           expect(userData.level_name).toBe('User');
           resolve(userData);

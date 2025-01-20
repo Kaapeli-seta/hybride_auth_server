@@ -99,18 +99,16 @@ const modifyUser = async (
     if (updates.length === 0) {
       throw new CustomError('No valid fields to update', 400);
     }
-
     const [result] = await connection.execute<ResultSetHeader>(
       `UPDATE Users SET ${updates.join(', ')} WHERE user_id = ?`,
       [...values, id],
     );
-
     if (result.affectedRows === 0) {
       throw new CustomError('User not found', 404);
     }
 
-    const updatedUser = await getUserById(id);
     await connection.commit();
+    const updatedUser = await getUserById(id);
     return updatedUser;
   } finally {
     connection.release();
